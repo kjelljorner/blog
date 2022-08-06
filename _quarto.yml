@@ -5,6 +5,8 @@ website:
   title: "The Valence Kjell"
   site-url: "https://www.valencekjell.com"
   description: "A blog about computational chemistry, cheminformatics and machine learning"
+  repo-url: https://github.com/kjelljorner/blog
+  repo-actions: [source, issue]
   navbar:
     right:
       - about.qmd
@@ -13,7 +15,9 @@ website:
       - icon: twitter
         href: https://twitter.com/kjelljorner
       - icon: rss
-        href: index.xml    
+        href: index.xml
+      - icon: newspaper
+        href: subscribe.html
   favicon: favicon.ico
   twitter-card: true
   open-graph: true
