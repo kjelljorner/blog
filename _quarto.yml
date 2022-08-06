@@ -3,7 +3,7 @@ project:
 
 website:
   title: "The Valence Kjell"
-  site-url: "https://kjelljorner.github.io/new-blog"
+  site-url: "https://kjelljorner.github.io/blog"
   description: "A blog about computational chemistry, cheminformatics and machine learning"
   navbar:
     right:
