@@ -1,0 +1,33 @@
+project:
+  type: website
+
+website:
+  title: "The Valence Kjell"
+  description: "A blog about computational chemistry, cheminformatics and machine learning"
+  site-url: https://kjelljorner.github.io/new-blog/
+  navbar:
+    right:
+      - about.qmd
+      - icon: github
+        href: https://github.com/kjelljorner
+      - icon: twitter
+        href: https://twitter.com/kjelljorner
+      - icon: rss
+        href: index.xml        
+  favicon: favicon.ico
+  twitter-card: true
+  open-graph: true
+  google-analytics: G-NH4YHPCKVD
+  cookie-consent:
+    type: express
+    style: simple
+
+format:
+  html:
+    theme:
+      light: flatly
+      dark: darkly
+    css: styles.css
+
+
+

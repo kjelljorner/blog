@@ -1,0 +1,14 @@
+channels:
+  - conda-forge
+dependencies:
+  - geometric
+  - morfeus-ml
+  - numpy
+  - loguru
+  - pip
+  - py3Dmol
+  - python
+  - rdkit
+  pip:
+    - pyberny
+    - pyscf

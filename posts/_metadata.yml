@@ -1,0 +1,25 @@
+# options specified here will apply to all posts in this folder
+
+# freeze computational output
+# (see https://quarto.org/docs/projects/code-execution.html#freeze)
+freeze: true
+
+# Enable banner style title blocks
+title-block-banner: true
+
+# Author name of all blog posts
+author:
+  - name: "Kjell Jorner"
+    orcid: 0000-0002-4191-6790
+
+# Add license information
+license: 'Code free to use under an MIT license. For citation, use webpage address and access date.'
+
+# Table of content settings
+toc: true
+
+# Enable comments
+comments:
+  utterances:
+    repo: kjelljorner/blog-comments
+    theme: preferred-color-scheme

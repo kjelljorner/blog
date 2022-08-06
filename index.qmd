@@ -1,0 +1,17 @@
+---
+title: "The Valence Kjell"
+subtitle: "A blog about computational chemistry, cheminformatics and machine learning"
+listing:
+  contents: posts
+  sort: "date desc"
+  type: default
+  categories: true
+  feed: true
+  sort-ui: true
+  filter-ui: true
+  fields: [image, date, title, subtitle, author]
+page-layout: full
+title-block-banner: true
+---
+
+
