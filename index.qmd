@@ -6,12 +6,11 @@ listing:
   sort: "date desc"
   type: default
   categories: true
-  feed: true
   sort-ui: true
   filter-ui: true
   fields: [image, date, title, subtitle, author]
+  feed:
+    type: partial
 page-layout: full
-title-block-banner: true
+title-block-banner: false
 ---
-
-
