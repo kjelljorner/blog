@@ -8,6 +8,7 @@ website:
   repo-url: https://github.com/kjelljorner/blog
   repo-actions: [source, issue]
   navbar:
+    logo: shell.png
     right:
       - about.qmd
       - icon: github
