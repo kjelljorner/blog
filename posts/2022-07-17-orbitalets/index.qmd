@@ -2,7 +2,7 @@
 title: "Frontier molecular orbitalets"
 subtitle: "How to compute and visualize orbitalets with PySCF"
 date: "2022-07-17"
-categories: [quantum_chemistry]
+categories: ["quantum chemistry"]
 image: "HOMOL.png"
 jupyter: python3
 ---

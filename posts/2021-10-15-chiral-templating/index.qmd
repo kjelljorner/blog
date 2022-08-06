@@ -3,7 +3,7 @@ title: "Assigning chiral information with SMARTS templates"
 subtitle: "How to transform an achiral molecule into a chiral based on a chiral template in RDKit"
 date: "2021-10-15"
 image: "templating.pdf"
-categories: [cheminformatics]
+categories: ["cheminformatics"]
 jupyter: python3
 ---
 

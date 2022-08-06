@@ -2,7 +2,7 @@
 title: "Visualizing atomic type orbitals in molecules"
 subtitle: "How to compute and visualize natural atomic orbitals with PySCF"
 date: "2022-06-30"
-categories: [quantum_chemistry]
+categories: ["quantum chemistry"]
 image: "orbitals.png"
 jupyter: python3
 ---
