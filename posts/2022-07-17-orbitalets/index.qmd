@@ -4,6 +4,7 @@ subtitle: "How to compute and visualize orbitalets with PySCF"
 date: "2022-07-17"
 categories: ["quantum chemistry"]
 image: "HOMOL.png"
+aliases: ["../../quantum_chemistry/2022/07/17/Orbitalets.html"]
 jupyter: python3
 ---
 

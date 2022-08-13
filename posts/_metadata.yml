@@ -5,21 +5,24 @@
 freeze: true
 
 # Enable banner style title blocks
-title-block-banner: true
+title-block-banner: false
 
 # Author name of all blog posts
 author:
   - name: "Kjell Jorner"
-    orcid: 0000-0002-4191-6790
+    orcid: "0000-0002-4191-6790"
 
 # Add license information
-license: 'Code free to use under an MIT license. For citation, use webpage address and access date.'
+license: "Code free to use under an MIT license. For citation, use webpage address and access date."
 
 # Table of content settings
 toc: true
 
+# Add code tools
+code-tools: true
+
 # Enable comments
 comments:
   utterances:
-    repo: kjelljorner/blog-comments
-    theme: preferred-color-scheme
+    repo: "kjelljorner/blog-comments"
+    theme: "preferred-color-scheme"

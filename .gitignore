@@ -1,3 +1,5 @@
 /.quarto/
 /_site/
 /_freeze/
+.ipynb_checkpoints/
+node_modules

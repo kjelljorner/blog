@@ -4,6 +4,7 @@ subtitle: "How to transform an achiral molecule into a chiral based on a chiral 
 date: "2021-10-15"
 image: "templating.pdf"
 categories: ["cheminformatics"]
+aliases: ["../../cheminformatics/2021/10/15/Chiral-templating.html"]
 jupyter: python3
 ---
 

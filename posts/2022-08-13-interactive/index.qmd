@@ -1,0 +1,578 @@
+---
+title: Interactive molecular content
+subtitle: "How to embed interactive content in webpages with Quarto using Bokeh, 3DMol.js and NGL"
+date: "2022-08-13"
+categories:
+  - quantum chemistry
+bibliography: references.bib
+csl: acs.csl
+image: "interactive.png"
+jupyter: python3
+---
+
+## Introduction
+
+I recently rebased the blog on the [Quarto](https://quarto.org) publishing system. Quarto is an evolution of R Markdown and allows publishing a notebook (.qmd or .ipynb) in various formats, inlcuding as [blog posts](https://quarto.org/docs/websites/website-blog.html). 
+
+In the [previous post](../2022-06-30-visualizing-atomic/) on visualizing atomic type orbitals, we had some code for interactive visualization with [ipywidgets](https://github.com/jupyter-widgets/ipywidgets). Unfortunately, it didn't work in the browser as it needs a Python backend running. With Quarto as publishing system, we can work around that problem.
+
+Thanks to the [support](https://quarto.org/docs/interactive/ojs/) for the Observable dialect of JavaScript (OJS) in Quarto, we can create interactive elements which will work on the final static webpage. This will require some level of proficiency with JavaScript, but rest assured that I knew zero JavaScript when I started writing this blog post. The code cells featuring OJS are hidden in this post, but can be shown by clicking on the arrow next to "Code". But first we will start with a visualization that doesn't need any JavaScript skills.
+
+## Visualing molecules with molplotly
+
+[molplotly](https://github.com/wjm41/molplotly) is a great add-on to [plotly](https://plotly.com) to display data together with 2D images of the associated molecules. It is really easy to use and works nicely in a Jupyter Notebook, but requires a Dash app to run in the background. Here we will instead use [Bokeh](https://bokeh.org) to create similar plots which can be displayed on a static webpage, although with a bit more effort. See the Bokeh [documentation](https://docs.bokeh.org/en/latest/docs/user_guide/tools.html#custom-tooltip) as well as the blog post by [iwatobipen](https://iwatobipen.wordpress.com/2020/06/07/rendering-molecular-image-tooltips-on-bokeh-rdkit-memo-visualization/) and the notebook from [OpenEye Software](https://github.com/oess/notebook_examples/blob/master/Notebooks/Molecule_Plots/MoleculePlots.ipynb) for more ideas.
+
+We visualize the ESOL dataset,[@delaney_2004] downloaded from [MoleculeNet](https://moleculenet.org).
+
+```{python}
+from bokeh.io import output_notebook
+from bokeh.models import HoverTool
+from bokeh.plotting import figure, show, ColumnDataSource
+import pandas as pd
+from rdkit import Chem
+from rdkit.Chem import AllChem
+
+# Read the csv file
+df = pd.read_csv("delaney-processed.csv")
+
+# Get data to plot
+all_smiles = df["smiles"]
+x = df["measured log solubility in mols per litre"].values
+y = df["Molecular Weight"].values
+
+# Create SVGs for each smiles with the "new" RDKit drawing code
+imgs = []
+for smiles in all_smiles:
+    mol = Chem.MolFromSmiles(smiles)
+    d2d = Chem.Draw.MolDraw2DSVG(150, 150)
+    d2d.DrawMolecule(mol)
+    d2d.FinishDrawing()
+    svg = d2d.GetDrawingText()
+    imgs.append(svg)
+
+# Configure for output in the notebook
+output_notebook()
+
+# Load the data into a source and plot
+source = ColumnDataSource(
+    data={
+        "x": x,
+        "y": y,
+        "imgs": imgs,
+        "smiles": all_smiles,
+    }
+)
+p = figure()
+p.scatter("x", "y", source=source)
+p.plot_height = 300
+p.plot_width = 400
+p.sizing_mode = "scale_width"
+p.xaxis.axis_label = "Molecular weight"
+p.yaxis.axis_label = "log S"
+
+# Create tooltips referencing stored images
+TOOLTIPS = """\
+    <div>
+        <div>
+            @imgs{safe}
+        </div>
+        <div>
+            <span>[$index]</span>
+        </div>
+        <div>
+            <span>@smiles{safe}</span>
+        </div>
+        <div>
+            <span>($x, $y)</span>
+        </div>
+    </div>
+"""
+
+# Connect tooltips to plot
+p.add_tools(HoverTool(tooltips=TOOLTIPS))
+
+# Show figure
+show(p)
+```
+
+## Visualizing different conformers
+
+As a second exercise, we are going to create a number of conformers for the propanal molecule using [[morfeus]{.smallcaps}](https://github.com/kjelljorner/morfeus). We save one file with lowest energy conformer and one file with all the conformers. The function `ojs_define` is special to Quarto and allows passing data from Python or R to OJS. We use it to send over a list of the conformer energies for later display.
+
+```{python}
+#| output: false
+from morfeus.conformer import ConformerEnsemble, _extract_from_mol
+from morfeus.io import write_xyz
+
+# Optimize propanal conformers
+smiles = "CCC=O"
+ce = ConformerEnsemble.from_rdkit(smiles, optimize="MMFF94", random_seed=42)
+ce.prune_rmsd()
+ce.sort()
+
+# Write out conformers
+ce.write_xyz("lowest.xyz", ids=[0])
+ce.align_conformers()
+elements, conformer_coordinates, _, _ = _extract_from_mol(ce.mol)
+write_xyz("conformers.xyz", elements, conformer_coordinates)
+
+# Send variables to OJS
+ojs_define(confEnergies=list(ce.get_relative_energies()))
+```
+
+Now we will create the interactive visualization with [3Dmol.js](https://github.com/3dmol/3Dmol.js).[@rego_2015] We will first create an input slider to allow the reader to select which conformer to show. This is done with `Inputs.range` in OJS (click "Code" to reveal the OJS code). We then use 3DMol.js to load the `conformers.xyz` file and define the function `updateViewer` which we couple to the input slider. There is a Python interface to 3Dmol called [py3Dmol](https://github.com/3dmol/3Dmol.js/tree/master/packages/py3Dmol), but it currently cannot generate the level of interactivity that we need.
+
+We create a slider to choose the conformer, and a reactive label that prints the energy of the currently selected conformer.
+
+```{ojs}
+//| code-fold: true
+//| panel: input
+viewof confIDInput = Inputs.range([1, confEnergies.length], {value: 1, step: 1, label: "Conformer ID"});
+md`Energy (kcal/mol): ${confEnergies[confIDInput - 1].toFixed(3)}`
+```
+
+::: {#layout-conf .ojs-track-layout}
+
+```{ojs}
+//| code-fold: true
+// Create container
+divConf = html`<div style="width:${layoutWidth["layout-conf"]}px;height:${layoutWidth["layout-conf"] * 2 / 3}px;position:relative"></div>`;
+```
+
+:::
+
+```{ojs}
+//| code-fold: true
+//| output: false
+// Create drawing area
+
+// Imports
+jquery = require("jquery");
+$3Dmol = require("3dmol");
+NGL = require("ngl@next");
+
+// Create viewer
+viewerConf = {
+  let xyzString = await FileAttachment("conformers.xyz").text();
+  let viewer = $3Dmol.createViewer(divConf, {});
+  viewer.addModelsAsFrames(xyzString, "xyz");
+  viewer.setStyle({stick:{}});
+  viewer.zoomTo();
+  viewer.render();
+  return viewer;
+};
+
+updateViewer = function(viewer, ID){
+  viewer.setFrame(ID);
+  viewer.render();
+  return viewer;
+};
+
+updateViewer(viewerConf, confIDInput - 1);
+```
+
+## Optimization trajectory
+
+Next we will display the results of a geometry optimization. To do the optimization we are going to use the [PyBerny package](https://github.com/jhrmnn/pyberny), which is a partial Python re-implementation of the algorithm described by Bernhard Schlegel and co-workers.[@birkholz_2016].
+
+We then use PyBerny together with the [MOPAC backend](https://github.com/openmopac/mopac) to optimize the molecule. MOPAC is nowadays available for free and can be installed with `conda`.
+
+```shell
+$ conda install -c conda-forge mopac
+```
+
+We store all the energies and coordinates and write an xyz file with the whole optimization trajectory. [wurlitzer](https://github.com/minrk/wurlitzer) is needed to suppress some output from MOPAC.
+
+```{python}
+from berny import Berny, geomlib
+from berny.solvers import MopacSolver
+from wurlitzer import pipes
+from morfeus.io import write_xyz
+from morfeus.data import HARTREE_TO_KCAL, HARTREE_TO_EV
+
+optimizer = Berny(geomlib.readfile("lowest.xyz"))
+solver = MopacSolver()
+next(solver)
+traj = []
+energies = []
+with pipes() as (stdout, stderr):
+    for geom in optimizer:
+        energy, gradients = solver.send((list(geom), geom.lattice))
+        optimizer.send((energy, gradients))
+        traj.append(geom)
+        energies.append(energy)
+energies = [
+    (energy - energies[-1]) * HARTREE_TO_KCAL + 1e-8 for energy in energies
+]  # add small energy to avoid bug in observable plot
+write_xyz("traj.xyz", traj[0].species, [geom.coords for geom in traj])
+```
+
+Now we want to calculate some additional information to use in the visualization. That includes the bond lenghts of the C1--C2 bond for each step of the trajectory, which we store in `labels`. We also pass over the data on the energies for each step as a Pandas DataFrame. 
+
+```{python}
+#| output: false
+from morfeus.io import read_xyz
+import scipy.spatial
+import pandas as pd
+
+# Calculate the bond distance labels
+_, coordinates = read_xyz("traj.xyz")
+labels = [scipy.spatial.distance_matrix(coord, coord)[0, 1] for coord in coordinates]
+
+# Pass the variables onto Observable
+opt_data = pd.DataFrame({"step": range(1, len(energies) + 1), "energy": energies})
+ojs_define(labels=labels, optData=opt_data)
+```
+
+To be able to animate the trajectory we need to use a special type of input object that is not part of the standard Observable inputs. Luckily, the Observable creator Mike Bostock has created the `Scrubber` for us to do this work and we can easily import it.
+
+```{ojs}
+//| code-fold: true
+//| panel: input
+import {Scrubber} from "@mbostock/scrubber"
+numbers = Array.from({length: labels.length}, (_, i) => i + 1);
+viewof frameIDInput = Scrubber(numbers, {delay: 500, autoplay: false})
+```
+
+::: {#layout-berny .ojs-track-layout .column-page-inset .center layout-ncol=2 layout-valign="center"}
+
+```{ojs}
+//| code-fold: true
+// Create drawing area
+divBerny = html`<div style="width:${layoutWidth["layout-berny"] / 2}px;height:${layoutWidth["layout-berny"] / 3}px;position="relative"></div>`;
+```
+
+```{ojs}
+//| code-fold: true
+plot = Plot.plot({
+  x: {label: "→ Step"},
+  y: {label: "↑ Energy (kcal/mol)"},
+  style: {fontSize: 20},
+  margin: 50,
+  marks: [
+    Plot.line(transpose(optData), 
+      { x: "step", y: "energy"}, 
+      { stroke: "black" }
+    ),
+    Plot.dot(transpose(optData), Plot.select(I => [frameIDInput - 1], {x: "step", y: "energy"})),
+    Plot.text(transpose(optData), Plot.select(I => [frameIDInput - 1], {x: "step", y: "energy", text: "energy", dx: 10, dy: -10}))
+  ]}
+);
+```
+:::
+
+```{ojs}
+//| code-fold: true
+//| output: false
+
+// Create viewer
+viewerBerny = {
+  let xyzString = await FileAttachment("traj.xyz").text();
+  let viewer = $3Dmol.createViewer(divBerny);
+  viewer.addModelsAsFrames(xyzString, "xyz");
+  viewer.setStyle({stick: {}});
+  for (let i = 0; i < viewer.getNumFrames(); i++) {
+      viewer.addLabel(labels[i].toFixed(3), {alignment: "center", frame: i}, {serial: [1, 2]});
+  };  
+  viewer.zoomTo();
+  viewer.render();
+  return viewer;
+};
+
+// Update the view
+updateViewer(viewerBerny, frameIDInput - 1)
+```
+
+## Molecular orbitals
+
+We're now ready to tackle the interactive visualization of molecular orbitals. We again use PySCF to generate them. We send over the orbital occupations numbers and energies for display with OJS.
+
+```{python}
+#| output: false
+import pyscf
+from pyscf import gto, lo, tools, dft
+
+elements, coordinates = read_xyz("lowest.xyz")
+atoms = [(element, coordinate) for element, coordinate in zip(elements, coordinates)]
+pyscf_mole = gto.Mole(basis="sto-3g")
+pyscf_mole.atom = atoms
+pyscf_mole.build()
+
+mf = dft.RKS(pyscf_mole)
+mf.xc = "b3lyp"
+mf.run()
+
+n_orbs = mf.mo_coeff.shape[1]
+for i in range(n_orbs):
+    tools.cubegen.orbital(
+        pyscf_mole, f"mo_{i+1:02d}.cube", mf.mo_coeff[:, i], nx=40, ny=40, nz=40
+    )
+
+homo_ID = pyscf_mole.nelectron // 2
+mo_energies = list(mf.mo_energy * HARTREE_TO_EV)
+mo_data = pd.DataFrame({"energy": mo_energies})
+ojs_define(
+    MOOccs=list(mf.mo_occ), MOEnergies=mo_energies, homoID=homo_ID, MOData=mo_data
+)
+```
+
+We now create a slider to select the MO number, as well as an input box to select the isodensity surface value. We show both the orbitals, and a "tick" plot made with [Observable Plot](https://github.com/observablehq/plot) to show were the selected orbital lies in the manifold.
+
+```{ojs}
+//| code-fold: true
+//| panel: input
+viewof MOIDInput = Inputs.range([1, MOOccs.length], {value: homoID, step: 1, label: "MO ID"});
+viewof MOIsoInput = Inputs.number([0.0, Infinity], {value: 0.04, step: 0.0001, label: "Isodensity value"});
+md`Occ: ${MOOccs[MOIDInput - 1]}  
+Energy (eV): ${MOEnergies[MOIDInput - 1].toFixed(3)}`;
+```
+
+::: {#layout-mo .ojs-track-layout .column-page-inset layout-ncol=2 layout-valign="center"}
+
+```{ojs}
+//| code-fold: true
+// Create drawing area
+divMO = html`<div style="width:${layoutWidth["layout-mo"] / 2}px;height:${layoutWidth["layout-mo"] / 3}px;position="relative"></div>`;
+```
+
+```{ojs}
+//| code-fold: true
+plot_mo = Plot.plot({
+  y: {
+    domain: [-30, d3.max(MOData["energy"])],
+    label: "↑ Energy (eV)"
+  },
+  style: {fontSize: 20},  
+  margin: 40,
+  marks: [
+    Plot.tickY(transpose(MOData), {y: "energy"}),
+    Plot.tickY(transpose(MOData), Plot.select(I => [MOIDInput - 1], {y: "energy", strokeWidth: 3}))
+  ]}
+);
+```
+
+:::
+
+```{ojs}
+//| code-fold: true
+//| output: false
+// current we need to add all the orbitals explicitly, not optimal.
+MOStrings = [ 
+    await FileAttachment("mo_01.cube").text(),
+    await FileAttachment("mo_02.cube").text(),
+    await FileAttachment("mo_03.cube").text(),
+    await FileAttachment("mo_04.cube").text(),
+    await FileAttachment("mo_05.cube").text(),
+    await FileAttachment("mo_06.cube").text(),
+    await FileAttachment("mo_07.cube").text(),
+    await FileAttachment("mo_08.cube").text(),
+    await FileAttachment("mo_09.cube").text(),
+    await FileAttachment("mo_10.cube").text(),
+    await FileAttachment("mo_11.cube").text(),
+    await FileAttachment("mo_12.cube").text(),
+    await FileAttachment("mo_13.cube").text(),
+    await FileAttachment("mo_14.cube").text(),
+    await FileAttachment("mo_15.cube").text(),
+    await FileAttachment("mo_16.cube").text(),
+    await FileAttachment("mo_17.cube").text(),
+    await FileAttachment("mo_18.cube").text(),
+    await FileAttachment("mo_19.cube").text(),
+    await FileAttachment("mo_20.cube").text(),
+    await FileAttachment("mo_21.cube").text(),
+    await FileAttachment("mo_22.cube").text(),
+    await FileAttachment("mo_23.cube").text(),
+    await FileAttachment("mo_24.cube").text(),
+    await FileAttachment("mo_25.cube").text(),
+    await FileAttachment("mo_26.cube").text()
+]
+
+// Create viewer
+viewerMO = {
+  let xyzString = await FileAttachment("lowest.xyz").text();
+  let viewer = $3Dmol.createViewer(divMO, {});
+  viewer.addModelsAsFrames(xyzString.repeat(MOOccs.length), "xyz");
+  viewer.setStyle({stick: {}});
+  for (let i = 0; i < MOOccs.length; i++) {
+    viewer.addVolumetricData(MOStrings[i], "cube", {"isoval": -MOIsoInput, "color": "red", "opacity": 0.8, frame: i});
+    viewer.addVolumetricData(MOStrings[i], "cube", {"isoval": MOIsoInput, "color": "blue", "opacity": 0.8, frame: i});
+    viewer.render();    
+  };    
+  viewer.zoomTo();
+  viewer.render();
+  return viewer;
+};
+
+updateViewer(viewerMO, MOIDInput - 1);
+```
+
+## Surface properties
+
+3Dmol can also be used to display surfaces. Here we generate the total electron density and the electrostatic potential as cube files. 
+
+```{python}
+#| output: false
+dm = mf.make_rdm1()
+tools.cubegen.density(pyscf_mole, "density.cube", dm,  nx=40, ny=40, nz=40)
+tools.cubegen.mep(pyscf_mole, "esp.cube", dm,  nx=40, ny=40, nz=40)
+```
+
+We then create a visualization of the surface and an input box to select the isodensity value.
+
+```{ojs}
+//| code-fold: true
+//| panel: input
+// Create input slider
+viewof isoInput = Inputs.number([0.0, Infinity], {value: 0.001, step: 0.0001, label: "Isodensity value"});
+```
+
+::: {#layout-density .ojs-track-layout}
+
+```{ojs}
+//| code-fold: true
+
+// Create drawing area
+divDensity = html`<div style="width:${layoutWidth["layout-density"]}px;height:${layoutWidth["layout-density"] * 2 / 3}px;position:relative"></div>`;
+```
+
+:::
+
+```{ojs}
+//| code-fold: true
+//| output: false
+
+// Create viewer
+viewerDensity = {
+  let xyz_string = await FileAttachment("lowest.xyz").text();
+  let viewer = $3Dmol.createViewer(divDensity, {});
+  viewer.addModel(xyz_string, "xyz");
+  viewer.setStyle({stick: {}});
+  viewer.zoomTo();
+  viewer.render();
+  return viewer;
+};
+
+add_iso = function(viewer, voldata, isoValue) {
+  viewer.removeAllShapes();
+  viewer.addIsosurface(voldata, {isoval: isoValue, color: "lightgray", opacity:0.85});
+  viewer.render();
+};
+
+{
+  let densityString = await FileAttachment("density.cube").text();
+  let voldata = new $3Dmol.VolumeData(densityString, "cube");
+  add_iso(viewerDensity, voldata, isoInput);
+};
+```
+
+We can do the same thing with an electrostatic potential (ESP) surface, where we map the ESP onto an isodensity surface. 
+
+```{ojs}
+//| code-fold: true
+//| panel: input
+// Create input object
+viewof ESPInput = Inputs.number([0.0, Infinity], {value: 0.001, step: 0.0001, label: "Isodensity value"});
+```
+
+::: {#layout-esp .ojs-track-layout}
+
+```{ojs}
+//| code-fold: true
+// Create drawing area
+div_ESP = html`<div style="width:${layoutWidth["layout-esp"]}px;height:${layoutWidth["layout-esp"] * 2 / 3}px;position:relative"></div>`;
+
+// Create a color legend
+Plot.legend({label: "esp", color: {scheme: "rdbu", domain: [-1, 1]}, width: layoutWidth["layout-esp"] / 3})
+```
+
+:::
+
+```{ojs}
+//| code-fold: true
+//| output: false
+// Create viewer
+viewerESP = {
+  let xyzString = await FileAttachment("lowest.xyz").text();
+  let viewer = $3Dmol.createViewer(div_ESP, {});
+  viewer.addModelsAsFrames(xyzString, "xyz");
+  viewer.setStyle({stick: {}});
+  viewer.zoomTo();
+  viewer.render();
+  return viewer;
+};
+
+// Create function to add ESP to viewer
+add_esp = function(viewer, densityString, espString, isoValue) {
+  viewer.removeAllShapes();
+  viewer.addVolumetricData(densityString, "cube", {"isoval": isoValue, "smoothness": 2, "opacity": 0.95, "voldata": espString, "volformat": "cube", "volscheme": {"gradient":"rwb", "min":-.1, "max":.1}});
+  viewer.render();
+};
+
+// Draw the ESP
+{
+  let densityString = await FileAttachment("density.cube").text();
+  let espString = await FileAttachment("esp.cube").text();
+  add_esp(viewerESP, densityString, espString, ESPInput);
+}
+```
+
+## NGL
+
+An alternative to 3Dmol is NGL.[@nguyen_2018] There is a very nice IPython/Jupyter widget called [nglview](https://github.com/nglviewer/nglview) that is based on NGL. Unfortunately, I also couldn't get functionalities like the [Trajectory](https://github.com/nglviewer/nglview#trajectory) to work interactively. Therefore we work around this and use the NGL library directly with JavaScript and make our own interactive controls as we did above for 3Dmol.
+
+First we need to create a structure file that can be read by NGL. The PDB format is most convenient for this purpose and we use [Atomic Simulation Environment](https://gitlab.com/ase/ase) to help us rewrite the multi-structure xyz file to a multi-structure pdb file.
+
+```{python}
+import ase.io
+
+traj = [atoms for atoms in ase.io.iread("conformers.xyz")]
+ase.io.write("confomers.pdb", traj)
+```
+
+We are now ready to visualize the PDB file with NGL.
+
+```{ojs}
+//| code-fold: true
+//| panel: input
+// Create input slider
+viewof trajInput = Inputs.range([1, confEnergies.length], {value: 1, step: 1, label: "Conformer ID"});
+md`Energy (kcal/mol): ${confEnergies[trajInput - 1].toFixed(3)}`
+```
+
+::: {#layout-ngl .ojs-track-layout}
+
+```{ojs}
+//| code-fold: true
+// Create drawing area
+divNGL = html`<div style="width:${layoutWidth["layout-ngl"]}px;height:${layoutWidth["layout-ngl"] * 2 / 3}px;position:relative"></div>`;
+```
+
+:::
+
+```{ojs}
+//| code-fold: true
+//| output: false
+
+// Create trajectory object
+trajPDB = {
+  let stage = new NGL.Stage(divNGL, {clipDist: 0.0, backgroundColor: "white"});
+  let pdbString = await FileAttachment("confomers.pdb").blob();
+  let structure = await stage.loadFile(pdbString, {ext: "pdb", asTrajectory: true})
+  let traj = structure.addTrajectory().trajectory
+  structure.addRepresentation("licorice");
+  structure.autoView();
+  return traj;
+};
+
+// Create function to update trajectory
+update_traj = function(traj, id){
+  traj.setFrame(id)
+};
+
+// Update trajectory based on slider
+update_traj(trajPDB, trajInput - 1);
+```
+
+## References
+
+::: {#refs}
+:::
