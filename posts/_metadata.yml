@@ -21,6 +21,10 @@ toc: true
 # Add code tools
 code-tools: true
 
+# Add Twitter card
+twitter-card:
+  site: "@kjelljorner"
+  
 # Enable comments
 comments:
   utterances:

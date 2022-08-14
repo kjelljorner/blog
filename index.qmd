@@ -1,6 +1,7 @@
 ---
 title: "The Valence Kjell"
 subtitle: "A blog about computational chemistry, cheminformatics and machine learning"
+image: "shell.png"
 listing:
   contents: posts
   sort: "date desc"
@@ -13,6 +14,7 @@ listing:
     type: partial
 page-layout: full
 title-block-banner: false
+
 ---
 
 Subscribe to the [RSS feed](index.xml) or the [newsletter](subscribe.html).

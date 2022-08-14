@@ -1,5 +1,6 @@
 project:
   type: website
+  resources: ".gitattributes"
 
 website:
   title: "The Valence Kjell"
@@ -20,7 +21,8 @@ website:
       - icon: newspaper
         href: subscribe.html
   favicon: favicon.ico
-  twitter-card: true
+  twitter-card:
+    site: "@kjelljorner"
   open-graph: true
   google-analytics: G-NH4YHPCKVD
   cookie-consent:
