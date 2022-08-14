@@ -1,6 +1,5 @@
 project:
   type: website
-  resources: ".gitattributes"
 
 website:
   title: "The Valence Kjell"
