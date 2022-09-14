@@ -21,12 +21,12 @@
 <item>
   <title>Prediction intervals for any machine learning model</title>
   <dc:creator>Kjell Jorner</dc:creator>
-  <link>https://www.valencekjell.com/posts/2022-09-02-prediction-intervals/index.html</link>
+  <link>https://www.valencekjell.com/posts/2022-09-14-prediction-intervals/index.html</link>
   <description><![CDATA[ The generalization error of a machine learning model is often given as the mean absolute error (MAE) or the root mean squared error (RMSE). Sometimes, the goodness of fit is given as the <em>coefficient of determination</em>, R<sup>2</sup>. While these metrics give an impression of the accuracy of the model on average, they do not really give a good representation of the error that can be expected for a single new prediction. Ironically, that is probably the quantity that the end user of the model is most interested in. ]]></description>
   <category>machine learning</category>
-  <guid>https://www.valencekjell.com/posts/2022-09-02-prediction-intervals/index.html</guid>
+  <guid>https://www.valencekjell.com/posts/2022-09-14-prediction-intervals/index.html</guid>
   <pubDate>Tue, 13 Sep 2022 22:00:00 GMT</pubDate>
-  <media:content url="https://www.valencekjell.com/posts/2022-09-02-prediction-intervals/plot.png" medium="image" type="image/png" height="100" width="144"/>
+  <media:content url="https://www.valencekjell.com/posts/2022-09-14-prediction-intervals/plot.png" medium="image" type="image/png" height="100" width="144"/>
 </item>
 <item>
   <title>Interactive molecular content</title>
