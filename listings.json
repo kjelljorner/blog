@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/2022-09-02-prediction-intervals/index.html",
       "/posts/2022-08-13-interactive/index.html",
       "/posts/2022-07-17-orbitalets/index.html",
       "/posts/2022-06-30-visualizing-atomic/index.html",

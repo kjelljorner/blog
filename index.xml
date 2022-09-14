@@ -16,8 +16,18 @@
 <height>144</height>
 <width>144</width>
 </image>
-<generator>quarto-1.0.38</generator>
-<lastBuildDate>Sat, 13 Aug 2022 04:00:00 GMT</lastBuildDate>
+<generator>quarto-1.1.189</generator>
+<lastBuildDate>Tue, 13 Sep 2022 22:00:00 GMT</lastBuildDate>
+<item>
+  <title>Prediction intervals for any machine learning model</title>
+  <dc:creator>Kjell Jorner</dc:creator>
+  <link>https://www.valencekjell.com/posts/2022-09-02-prediction-intervals/index.html</link>
+  <description><![CDATA[ The generalization error of a machine learning model is often given as the mean absolute error (MAE) or the root mean squared error (RMSE). Sometimes, the goodness of fit is given as the <em>coefficient of determination</em>, R<sup>2</sup>. While these metrics give an impression of the accuracy of the model on average, they do not really give a good representation of the error that can be expected for a single new prediction. Ironically, that is probably the quantity that the end user of the model is most interested in. ]]></description>
+  <category>machine learning</category>
+  <guid>https://www.valencekjell.com/posts/2022-09-02-prediction-intervals/index.html</guid>
+  <pubDate>Tue, 13 Sep 2022 22:00:00 GMT</pubDate>
+  <media:content url="https://www.valencekjell.com/posts/2022-09-02-prediction-intervals/plot.png" medium="image" type="image/png" height="100" width="144"/>
+</item>
 <item>
   <title>Interactive molecular content</title>
   <dc:creator>Kjell Jorner</dc:creator>
@@ -25,7 +35,7 @@
   <description><![CDATA[ I recently rebased the blog on the <a href="https://quarto.org">Quarto</a> publishing system. Quarto is an evolution of R Markdown and allows publishing a notebook (.qmd or .ipynb) in various formats, inlcuding as <a href="https://quarto.org/docs/websites/website-blog.html">blog posts</a>. ]]></description>
   <category>quantum chemistry</category>
   <guid>https://www.valencekjell.com/posts/2022-08-13-interactive/index.html</guid>
-  <pubDate>Sat, 13 Aug 2022 04:00:00 GMT</pubDate>
+  <pubDate>Fri, 12 Aug 2022 22:00:00 GMT</pubDate>
   <media:content url="https://www.valencekjell.com/posts/2022-08-13-interactive/interactive.png" medium="image" type="image/png" height="138" width="144"/>
 </item>
 <item>
@@ -35,7 +45,7 @@
   <description><![CDATA[ A recent <a href="https://www.chemistryworld.com/news/tiny-orbitals-paint-intuitive-picture-of-large-molecules-reactivity/4015881.article">article</a> in Chemistry World caught my attention. It reported the recent <a href="https://doi.org/10.1021/jacsau.2c00085">work</a> by Yang and co-workers on describing chemical reactivity with so-called orbitalets. Orbitalets are a type of localized molecular orbital that came out of the Yang group’s work on eliminating the delocalization error from density functionals. The highest occupied orbitalet is called the HOMOL, and the lowest unoccupied orbitalet is called the LUMOL. ]]></description>
   <category>quantum chemistry</category>
   <guid>https://www.valencekjell.com/posts/2022-07-17-orbitalets/index.html</guid>
-  <pubDate>Sun, 17 Jul 2022 04:00:00 GMT</pubDate>
+  <pubDate>Sat, 16 Jul 2022 22:00:00 GMT</pubDate>
   <media:content url="https://www.valencekjell.com/posts/2022-07-17-orbitalets/HOMOL.png" medium="image" type="image/png" height="85" width="144"/>
 </item>
 <item>
@@ -45,7 +55,7 @@
   <description><![CDATA[ Sometimes we need to display atomic type orbitals in a schematic way to visualize simple concepts. The molecular orbitals or even localized orbitals are then overly complex. Simple examples are the ChemDraw-style orbitals, which are used to rationalize reactions in organic chemistry. Now, is it possible to obtain similar orbitals, but in 3D? ]]></description>
   <category>quantum chemistry</category>
   <guid>https://www.valencekjell.com/posts/2022-06-30-visualizing-atomic/index.html</guid>
-  <pubDate>Thu, 30 Jun 2022 04:00:00 GMT</pubDate>
+  <pubDate>Wed, 29 Jun 2022 22:00:00 GMT</pubDate>
   <media:content url="https://www.valencekjell.com/posts/2022-06-30-visualizing-atomic/orbitals.png" medium="image" type="image/png" height="50" width="144"/>
 </item>
 <item>
@@ -55,7 +65,7 @@
   <description><![CDATA[ Molecules can be described with undefined stereochemistry, for example by not specifiying whether a certain stereocenter is R or S. Here, we will investigate how we can fix the stereochemistry of such molecules based on a SMARTS template that matches (parts of) the molecule. This could be a useful trick for example with SMILES strings generated with <a href="https://github.com/aspuru-guzik-group/stoned-selfies">STONED SELFIES</a> that do not (yet) have chiral information. ]]></description>
   <category>cheminformatics</category>
   <guid>https://www.valencekjell.com/posts/2021-10-15-chiral-templating/index.html</guid>
-  <pubDate>Fri, 15 Oct 2021 04:00:00 GMT</pubDate>
+  <pubDate>Thu, 14 Oct 2021 22:00:00 GMT</pubDate>
   <media:content url="https://www.valencekjell.com/posts/2021-10-15-chiral-templating/templating.pdf" medium="image"/>
 </item>
 </channel>

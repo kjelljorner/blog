@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.0.38">
+<meta name="generator" content="quarto-1.1.189">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -11,10 +11,15 @@
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
-span.underline{text-decoration: underline;}
-div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
 div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
 ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
 </style>
 
 
@@ -138,10 +143,14 @@ cookieconsent.run({
   <header id="quarto-header" class="headroom fixed-top">
     <nav class="navbar navbar-expand-lg navbar-dark ">
       <div class="navbar-container container-fluid">
-      <a class="navbar-brand" href="./index.html">
-    <img src="./shell.png" alt="">
+      <div class="navbar-brand-container">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    <img src="./shell.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">The Valence Kjell</span>
-  </a>
+    </a>
+  </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
@@ -185,7 +194,7 @@ cookieconsent.run({
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(4)</span></div><div class="category" data-category="cheminformatics">cheminformatics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="quantum chemistry">quantum chemistry <span class="quarto-category-count">(3)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(5)</span></div><div class="category" data-category="cheminformatics">cheminformatics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="machine learning">machine learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="quantum chemistry">quantum chemistry <span class="quarto-category-count">(3)</span></div></div></div>
 <!-- main -->
 <main class="content column-page-left" id="quarto-document-content">
 
@@ -238,7 +247,32 @@ cookieconsent.run({
     </div>
 </div>
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="quantum chemistry" data-listing-date-sort="1660363200000" data-listing-file-modified-sort="1660438655637" data-listing-reading-time-sort="11.94">
+<div class="quarto-post image-right" data-index="0" data-categories="machine learning" data-listing-date-sort="1663106400000" data-listing-file-modified-sort="1663162633030" data-listing-reading-time-sort="7.44">
+<div class="thumbnail">
+<p><a href="./posts/2022-09-02-prediction-intervals/index.html"> <img src="./posts/2022-09-02-prediction-intervals/plot.png" class="thumnail-image"> </a></p>
+</div>
+<div class="body">
+<a href="./posts/2022-09-02-prediction-intervals/index.html">
+<h3 class="no-anchor listing-title">
+Prediction intervals for any machine learning model
+</h3>
+<div class="listing-subtitle">
+How to construct prediction intervals with the Jackknife+ using the MAPIE package
+</div>
+</a>
+</div>
+<div class="metadata">
+<a href="./posts/2022-09-02-prediction-intervals/index.html">
+<div class="listing-date">
+Sep 14, 2022
+</div>
+<div class="listing-author">
+Kjell Jorner
+</div>
+</a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="quantum chemistry" data-listing-date-sort="1660341600000" data-listing-file-modified-sort="1662117625523" data-listing-reading-time-sort="11.94">
 <div class="thumbnail">
 <p><a href="./posts/2022-08-13-interactive/index.html"> <img src="./posts/2022-08-13-interactive/interactive.png" class="thumnail-image"> </a></p>
 </div>
@@ -263,7 +297,7 @@ Kjell Jorner
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="quantum chemistry" data-listing-date-sort="1658030400000" data-listing-file-modified-sort="1660438655635" data-listing-reading-time-sort="4.09">
+<div class="quarto-post image-right" data-index="2" data-categories="quantum chemistry" data-listing-date-sort="1658008800000" data-listing-file-modified-sort="1660440401813" data-listing-reading-time-sort="4.09">
 <div class="thumbnail">
 <p><a href="./posts/2022-07-17-orbitalets/index.html"> <img src="./posts/2022-07-17-orbitalets/HOMOL.png" class="thumnail-image"> </a></p>
 </div>
@@ -288,7 +322,7 @@ Kjell Jorner
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="quantum chemistry" data-listing-date-sort="1656561600000" data-listing-file-modified-sort="1660438655633" data-listing-reading-time-sort="1.88">
+<div class="quarto-post image-right" data-index="3" data-categories="quantum chemistry" data-listing-date-sort="1656540000000" data-listing-file-modified-sort="1660440401811" data-listing-reading-time-sort="1.88">
 <div class="thumbnail">
 <p><a href="./posts/2022-06-30-visualizing-atomic/index.html"> <img src="./posts/2022-06-30-visualizing-atomic/orbitals.png" class="thumnail-image"> </a></p>
 </div>
@@ -313,7 +347,7 @@ Kjell Jorner
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="cheminformatics" data-listing-date-sort="1634270400000" data-listing-file-modified-sort="1660438655632" data-listing-reading-time-sort="4.265">
+<div class="quarto-post image-right" data-index="4" data-categories="cheminformatics" data-listing-date-sort="1634248800000" data-listing-file-modified-sort="1660440401810" data-listing-reading-time-sort="4.265">
 <div class="thumbnail">
 <p><a href="./posts/2021-10-15-chiral-templating/index.html"> <img src="./posts/2021-10-15-chiral-templating/templating.pdf" class="thumnail-image"> </a></p>
 </div>
@@ -413,6 +447,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
           toggle.classList.remove("alternate");
         }
       }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
     }
   }
   const isFileUrl = () => { 
@@ -515,7 +559,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
