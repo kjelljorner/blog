@@ -5,7 +5,7 @@ date: "2022-08-13"
 categories:
   - quantum chemistry
 bibliography: references.bib
-csl: acs.csl
+csl: ../../resources/acs.csl
 image: "interactive.png"
 jupyter: python3
 ---

@@ -28,6 +28,9 @@ website:
     type: express
     style: simple
 
+resources:
+  - "resources/*.csl"
+
 format:
   html:
     theme:
